@@ -1,7 +1,7 @@
 package com.homework.homework.controllers;
 
 import com.homework.homework.entities.User;
-import com.homework.homework.services.UserService;
+import com.homework.homework.services.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +14,16 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    UserServiceImp userService;
 
     @PostMapping("/usuario")
     public ResponseEntity<?> createUsuario(@RequestBody User usuario) {
         try {
-            return userService.createUsuario(usuario);
+           return ResponseEntity
+                   .status(HttpStatus.CREATED)
+                   .body(userService.createUsuario(usuario));
         }catch (Exception e) {
-            return null;
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -39,10 +41,9 @@ public class UserController {
     @PutMapping("/usuario/{id}")
     public ResponseEntity<?> updateUsuario(@PathVariable("id") long id, @RequestBody User usuario) {
         try {
-
-            return userService.updateUsuario(id, usuario);
+            return ResponseEntity.ok(userService.updateUsuario(id, usuario));
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 }
